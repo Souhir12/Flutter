@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:projectflutter_2022/inscription.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projectflutter_2022/Acceuil.dart';
+import 'fire_auth.dart';
 import 'theme.dart';
 
 
@@ -18,14 +19,12 @@ class _LoginState extends State<Login>  {
   FirebaseAuth auth = FirebaseAuth.instance;
 
   final FirebaseFirestore firestore=FirebaseFirestore.instance;
-  final TextEditingController user=TextEditingController();
+  final TextEditingController mail=TextEditingController();
   final TextEditingController pass=TextEditingController();
   final _formlogin = GlobalKey<FormState>();
   bool exist=false;
 
-
-
-
+  get formlogin => _formlogin;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +34,7 @@ class _LoginState extends State<Login>  {
         child: Form(
           key: _formlogin,
           child: Container(
-            width: MediaQuery.of(context).size.width*.4,
+            width: MediaQuery.of(context).size.width*.5,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -45,24 +44,16 @@ class _LoginState extends State<Login>  {
 
 
                 TextFormField(
-
                   decoration: const InputDecoration(
-                    icon: Icon(Icons.person),
-                    hintText:"Entrer votre nom d'utilisateur",
-                    labelText:"Nom d'utilisateur",
-                    hintStyle:TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600
-                    ),
-                    border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
+                    icon: Icon(Icons.email),
+                    hintText:"Entrer votre email",
+                    labelText:"Email",
                   ),
-                  ),
-                  controller: user,
+                  controller: mail,
                   // The validator receives the text that the user has entered.
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Veuillez entrer votre nom d'utilisateur";
+                      return "Veuillez entrer votre email";
                     }
                     return null;
                   },
@@ -87,28 +78,49 @@ class _LoginState extends State<Login>  {
                 ),
 
                 SizedBox(height: 50.0),
-                ElevatedButton(
-
-                  onPressed: () {
 
 
+                Container(
+                  height: 30,
+                  width:150,
+                  decoration: BoxDecoration(
+                    color:Colors.orange,
+                    borderRadius: BorderRadius.circular(60.0),
+                  ),
+                  child: ElevatedButton(
 
 
-                       setState(() {
+                    onPressed: ()async {
 
-                       if(_formlogin.currentState!.validate()) {
-                         if (exist) {
-                           Navigator.push(
-                               context,
-                               MaterialPageRoute(builder: (
-                                   context) => const Acceuil()),
-                           );
-                         }
 
-                  }
-                       });
-                  },
-                  child: Text('Se connecter'),
+
+
+
+                if (_formlogin.currentState!.validate()) {
+                User? user =
+                await FireAuth.signInUsingEmailPassword(
+                email: mail.text,
+                password: pass.text,
+                );
+
+                print(user);
+
+                if(user!=null){
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>  Acceuil()),
+                );
+                }
+                }
+
+                },
+
+
+
+
+
+                    child: Text('Se connecter'),
+                  ),
                 ),
 
                 TextButton(
@@ -120,36 +132,38 @@ class _LoginState extends State<Login>  {
                   },
                   child: Text("S'inscrire",style:TextStyle(fontWeight:FontWeight.bold,fontSize:17)),
                 ),
-                Container(
-                  height: 0,
-                  width:0,
-                  child: FutureBuilder(
-
-                      future: firestore.collection("utilisateur").get(),
-                      builder:(context, snapshot) {
-
-
-                        QuerySnapshot querySnapshot = snapshot.data as QuerySnapshot;
-                        List<QueryDocumentSnapshot> list = querySnapshot.docs;
-
-                        return ListView.builder(
-                          itemCount: list.length,
-                          itemBuilder: (context,index){
-                            if(user.text==list[index].get("user") && pass.text==list[index].get("pass"))
-                              exist=true;
-                            if (exist) {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => const Acceuil()),
-                              );
-                            }
-                            return Text("");
-                          },
-
-
-                        );
-                      }
-                  ),
-                ),
+                // Container(
+                //   height: 0,
+                //   width:0,
+                //   child: FutureBuilder(
+                //
+                //       future: firestore.collection("utilisateur").get(),
+                //       builder:(context, snapshot) {
+                //
+                //
+                //         QuerySnapshot querySnapshot = snapshot.data as QuerySnapshot;
+                //         List<QueryDocumentSnapshot> list = querySnapshot.docs;
+                //
+                //         return ListView.builder(
+                //           itemCount: list.length,
+                //           itemBuilder: (context,index){
+                //             if(user.text==list[index].get("user") && pass.text==list[index].get("pass"))
+                //               exist=true;
+                //             usercnx=user.text;
+                //             passcnx=pass.text;
+                //             // if (exist) {
+                //             //   Navigator.push(context, MaterialPageRoute(
+                //             //       builder: (context) => const Acceuil()),
+                //             //   );
+                //             // }
+                //             return Text("");
+                //           },
+                //
+                //
+                //         );
+                //       }
+                //   ),
+                // ),
 
 
               ],

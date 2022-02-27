@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'fire_auth.dart';
+
 class inscription extends StatefulWidget {
   const inscription({Key? key}) : super(key: key);
 
@@ -8,8 +12,9 @@ class inscription extends StatefulWidget {
 }
 
 class _inscriptionState extends State<inscription> {
+
   final FirebaseFirestore firestore=FirebaseFirestore.instance;
-  final TextEditingController user=TextEditingController();
+  final TextEditingController name=TextEditingController();
   final TextEditingController pass=TextEditingController();
   final TextEditingController mail=TextEditingController();
 
@@ -39,9 +44,11 @@ class _inscriptionState extends State<inscription> {
                     hintText:"Entrer votre nom d'utilisateur",
                     labelText:"Nom d'utilisateur",
                   ),
-                  controller: user,
+                  controller: name,
                   // The validator receives the text that the user has entered.
                   validator: (value) {
+                    print("555555555555");
+                    print(value);
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer votre nom d utilisateur';
                     }
@@ -75,6 +82,8 @@ class _inscriptionState extends State<inscription> {
                   controller: pass,
                   // The validator receives the text that the user has entered.
                   validator: (value) {
+                    print("pass");
+                    print(value);
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer votre Mot de passe';
                     }
@@ -88,12 +97,20 @@ class _inscriptionState extends State<inscription> {
                   onPressed: () async{
 
                     if(_formKey.currentState!.validate()) {
-                      await firestore.collection("utilisateur").add({
-                        "user": user.text,
-                        "Email": mail.text,
-                        "pass": pass.text
-                      });
-                      user.clear();
+                      User? user =
+                      await FireAuth.registerUsingEmailPassword(
+                        name: name.text,
+                        email: mail.text,
+                        password: pass.text,
+                      );
+
+                      print(user);
+                      // await firestore.collection("utilisateur").add({
+                      //   "user": user.text,
+                      //   "Email": mail.text,
+                      //   "pass": pass.text
+                      // });
+                      name.clear();
                       pass.clear();
                       mail.clear();
                       Navigator.of(context).pop();

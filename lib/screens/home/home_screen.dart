@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:projectflutter_2022/constants.dart';
-import 'screens/home/components/body.dart';
+import 'package:projectflutter_2022/screens/home/components/body.dart';
 
-class Acceuil extends StatefulWidget {
-  const Acceuil({Key? key}) : super(key: key);
-
-  @override
-  _AcceuilState createState() => _AcceuilState();
-}
-class _AcceuilState extends State<Acceuil> {
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,5 +41,4 @@ class _AcceuilState extends State<Acceuil> {
       ],
     );
   }
-
 }
