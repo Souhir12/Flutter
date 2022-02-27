@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:projectflutter_2022/constants.dart';
 import 'screens/home/components/body.dart';
 import 'Login.dart';
-
+import 'Article.dart';
 class Acceuil extends StatefulWidget {
   const Acceuil({Key? key}) : super(key: key);
 
@@ -41,6 +41,15 @@ class _AcceuilState extends State<Acceuil> {
                 MaterialPageRoute(builder: (context) =>  Login()),
                 );
                 await FirebaseAuth.instance.signOut();
+              },
+            ),
+            ListTile(
+              title: const Text('Ajouter article'),
+              onTap: ()async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  Article()),
+                );
               },
             ),
           ],
